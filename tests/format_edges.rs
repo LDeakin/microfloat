@@ -1,4 +1,7 @@
-use microfloat::{f4e2m1fn, f8e4m3, f8e4m3b11fnuz, f8e4m3fn, f8e4m3fnuz, f8e8m0fnu};
+use microfloat::{
+    f4e2m1fn, f6e2m3fn, f6e3m2fn, f8e3m4, f8e4m3, f8e4m3b11fnuz, f8e4m3fn, f8e4m3fnuz, f8e5m2,
+    f8e5m2fnuz, f8e8m0fnu,
+};
 
 #[test]
 fn special_constants_cover_format_modes() {
@@ -37,4 +40,51 @@ fn clamp_panics_when_min_is_nan() {
 #[test]
 fn clamp_panics_when_max_is_nan() {
     let _ = std::panic::catch_unwind(|| f8e4m3::ZERO.clamp(f8e4m3::ONE, f8e4m3::NAN));
+}
+
+#[test]
+fn format_query_helpers() {
+    assert!(f8e3m4::has_inf());
+    assert!(f8e3m4::has_nan());
+    assert!(!f8e3m4::is_finite_only());
+
+    assert!(f8e4m3::has_inf());
+    assert!(f8e4m3::has_nan());
+    assert!(!f8e4m3::is_finite_only());
+
+    assert!(f8e5m2::has_inf());
+    assert!(f8e5m2::has_nan());
+    assert!(!f8e5m2::is_finite_only());
+
+    assert!(!f8e4m3fn::has_inf());
+    assert!(f8e4m3fn::has_nan());
+    assert!(!f8e4m3fn::is_finite_only());
+
+    assert!(!f8e4m3fnuz::has_inf());
+    assert!(f8e4m3fnuz::has_nan());
+    assert!(!f8e4m3fnuz::is_finite_only());
+
+    assert!(!f8e5m2fnuz::has_inf());
+    assert!(f8e5m2fnuz::has_nan());
+    assert!(!f8e5m2fnuz::is_finite_only());
+
+    assert!(!f8e4m3b11fnuz::has_inf());
+    assert!(f8e4m3b11fnuz::has_nan());
+    assert!(!f8e4m3b11fnuz::is_finite_only());
+
+    assert!(!f8e8m0fnu::has_inf());
+    assert!(f8e8m0fnu::has_nan());
+    assert!(!f8e8m0fnu::is_finite_only());
+
+    assert!(!f4e2m1fn::has_inf());
+    assert!(!f4e2m1fn::has_nan());
+    assert!(f4e2m1fn::is_finite_only());
+
+    assert!(!f6e2m3fn::has_inf());
+    assert!(!f6e2m3fn::has_nan());
+    assert!(f6e2m3fn::is_finite_only());
+
+    assert!(!f6e3m2fn::has_inf());
+    assert!(!f6e3m2fn::has_nan());
+    assert!(f6e3m2fn::is_finite_only());
 }

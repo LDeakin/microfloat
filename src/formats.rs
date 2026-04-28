@@ -274,6 +274,21 @@ macro_rules! define_format {
                 self.0.to_ne_bytes()
             }
 
+            /// Returns `true` if this format can represent infinity.
+            pub const fn has_inf() -> bool {
+                <$format as crate::format::Format>::HAS_INF
+            }
+
+            /// Returns `true` if this format can represent NaN values.
+            pub const fn has_nan() -> bool {
+                <$format as crate::format::Format>::HAS_NAN
+            }
+
+            /// Returns `true` if this format saturates on overflow (finite-only).
+            pub const fn is_finite_only() -> bool {
+                <$format as crate::format::Format>::HAS_FINITE_ONLY
+            }
+
             /// Converts an `f32` to this format.
             ///
             /// The result is rounded to the nearest representable value. Values outside the

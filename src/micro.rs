@@ -186,7 +186,7 @@ impl<F: Format> MicroFloat<F> {
             }
             return self;
         }
-        if F::NAN == NanEncoding::None
+        if !F::HAS_NAN
             && self.is_sign_negative()
             && self.classify() != FpCategory::Zero
             && !is_integer(n.to_f32())
@@ -197,10 +197,7 @@ impl<F: Format> MicroFloat<F> {
     }
 
     pub fn sqrt(self) -> Self {
-        if F::NAN == NanEncoding::None
-            && self.is_sign_negative()
-            && self.classify() != FpCategory::Zero
-        {
+        if !F::HAS_NAN && self.is_sign_negative() && self.classify() != FpCategory::Zero {
             return Self::ZERO;
         }
         unary_result(self, libm::sqrtf(self.to_f32()))
@@ -219,27 +216,21 @@ impl<F: Format> MicroFloat<F> {
     }
 
     pub fn ln(self) -> Self {
-        if F::NAN == NanEncoding::None
-            && self.is_sign_negative()
-            && self.classify() != FpCategory::Zero
-        {
+        if !F::HAS_NAN && self.is_sign_negative() && self.classify() != FpCategory::Zero {
             return Self::ZERO;
         }
         unary_result(self, libm::logf(self.to_f32()))
     }
 
     pub fn ln_1p(self) -> Self {
-        if F::NAN == NanEncoding::None && self.to_f32() < -1.0 {
+        if !F::HAS_NAN && self.to_f32() < -1.0 {
             return Self::ZERO;
         }
         unary_result(self, libm::log1pf(self.to_f32()))
     }
 
     pub fn log2(self) -> Self {
-        if F::NAN == NanEncoding::None
-            && self.is_sign_negative()
-            && self.classify() != FpCategory::Zero
-        {
+        if !F::HAS_NAN && self.is_sign_negative() && self.classify() != FpCategory::Zero {
             return Self::ZERO;
         }
         unary_result(self, libm::log2f(self.to_f32()))
