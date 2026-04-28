@@ -34,5 +34,8 @@ rand_distr = ["dep:rand", "dep:rand_distr"]
 [dev-dependencies]
 proptest = { version = "1.11", default-features = false, features = ["std"] }
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
 [package.metadata.docs.rs]
     all-features = true
