@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/LDeakin/microfloat/compare/v0.1.1...HEAD)
 
+### Added
+
+- Add `has_inf()`, `has_nan()`, and `is_finite_only()` const methods to all float types for querying format properties
+
 ## [0.1.1](https://github.com/LDeakin/microfloat/releases/tag/v0.1.1) - 2026-04-28
 
 ### Added
