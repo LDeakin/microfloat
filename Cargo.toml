@@ -5,6 +5,7 @@ authors = ["Lachlan Deakin <ljdgit@gmail.com>"]
 edition = "2024"
 rust-version = "1.85"
 description = "8-bit and sub-byte floating point types"
+documentation = "https://docs.rs/microfloat"
 repository = "https://github.com/LDeakin/microfloat"
 license = "MIT OR Apache-2.0"
 keywords = [
