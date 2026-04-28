@@ -175,7 +175,7 @@ pub const fn is_nan_bits<F: Format>(bits: u8) -> bool {
 }
 
 pub fn is_infinity_bits<F: Format>(bits: u8) -> bool {
-    F::OVERFLOW == Overflow::Infinity
+    F::HAS_INF
         && exponent_field::<F>(bits) == F::MAX_EXPONENT_FIELD
         && mantissa_field::<F>(bits) == 0
 }
