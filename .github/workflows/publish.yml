@@ -4,8 +4,6 @@ on:
     tags: ['v*']
 jobs:
   publish:
-    # Temporarily disabled.
-    if: ${{ false }}
     runs-on: ubuntu-latest
     environment: release
     permissions:
