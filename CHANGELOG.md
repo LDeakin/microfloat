@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `has_inf()`, `has_nan()`, and `is_finite_only()` const methods to all float types for querying format properties
+- Add additional tests against the OCP spec
+- Document and test differences from the `float8` crate
 
 ## [0.1.1](https://github.com/LDeakin/microfloat/releases/tag/v0.1.1) - 2026-04-28
 
