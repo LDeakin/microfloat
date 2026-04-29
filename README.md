@@ -50,6 +50,15 @@ This crate provides [`no_std`](https://rust-embedded.github.io/book/intro/no-std
 
 See the [crate documentation](https://docs.rs/microfloat/) for more details.
 
+## Related Crates
+
+### `float8`
+
+The [`float8`](https://crates.io/crates/float8) crate provides `F8E4M3` and `F8E5M2` types that are not fully [OCP](https://www.opencompute.org/documents/ocp-8-bit-floating-point-specification-ofp8-revision-1-0-2023-12-01-pdf-1) compliant.
+They use NVIDIA's `__NV_SATFINITE` saturation mode ([`cuda_fp8.hpp`](https://gitlab.com/nvidia/headers/cuda-individual/cudart/-/raw/main/cuda_fp8.hpp)).
+In this mode `INFINITY` constants are `FP8_MAXNORM` overflow sentinels rather than true infinities.
+In contrast, microfloat uses `__NV_NOSAT` semantics (IEEE NaN/Inf on overflow).
+
 ### Optional Features
 
 - **`serde`** - Implement `Serialize` and `Deserialize` traits for the float
