@@ -79,6 +79,15 @@
 //!
 //! Compatibility with `ml-dtypes` is tested by generated fixtures in `tests/fixtures/`.
 //! These fixtures validate conversions, classifications, arithmetic, and math methods.
+//!
+//! ## Related Crates
+//!
+//! ### `float8`
+//!
+//! The [`float8`](https://crates.io/crates/float8) crate provides `F8E4M3` and `F8E5M2` types that are not fully OCP compliant.
+//! They use NVIDIA's `__NV_SATFINITE` saturation mode ([`cuda_fp8.hpp`](https://gitlab.com/nvidia/headers/cuda-individual/cudart/-/raw/main/cuda_fp8.hpp)).
+//! In this mode `INFINITY` constants are `FP8_MAXNORM` overflow sentinels rather than true infinities.
+//! In contrast, microfloat uses `__NV_NOSAT` semantics (IEEE NaN/Inf on overflow).
 
 mod bits;
 mod format;
