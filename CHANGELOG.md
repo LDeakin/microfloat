@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/LDeakin/microfloat/compare/v0.1.2...HEAD)
 
+### Added
+
+- Add const `next_up()` and `next_down()` methods to all float types
+
+### Changed
+
+- `classify_bits`, `is_infinity_bits` are now `const`
+
 ## [0.1.2](https://github.com/LDeakin/microfloat/releases/tag/v0.1.2) - 2026-04-29
 
 ### Added

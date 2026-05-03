@@ -4,7 +4,7 @@ use core::num::FpCategory;
 
 use crate::bits::{
     abs_bits, classify_bits, decode_f32, encode_f32, infinity_bits, nan_bits, neg_zero_bits,
-    negate_bits, one_bits, total_key,
+    negate_bits, next_down_bits, next_up_bits, one_bits, total_key,
 };
 use crate::format::{Format, NanEncoding, SignMode};
 
@@ -154,6 +154,14 @@ impl<F: Format> MicroFloat<F> {
             return self;
         }
         Self::from_bits(abs_bits::<F>(self.bits))
+    }
+
+    pub const fn next_up(self) -> Self {
+        Self::from_bits(next_up_bits::<F>(self.bits))
+    }
+
+    pub const fn next_down(self) -> Self {
+        Self::from_bits(next_down_bits::<F>(self.bits))
     }
 
     pub fn floor(self) -> Self {
