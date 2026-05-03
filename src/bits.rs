@@ -292,12 +292,12 @@ pub const fn next_down_bits<F: Format>(bits: u8) -> u8 {
     }
 }
 
-pub fn decode_f32<F: Format>(bits: u8) -> f32 {
-    if F::ZERO == ZeroMode::None {
+pub const fn decode_f32<F: Format>(bits: u8) -> f32 {
+    if matches!(F::ZERO, ZeroMode::None) {
         return if bits == 0xff {
             f32::from_bits(0x7fc0_0000)
         } else {
-            exp2i(i32::from(bits) - F::EXPONENT_BIAS)
+            exp2i(bits as i32 - F::EXPONENT_BIAS)
         };
     }
     if is_nan_bits::<F>(bits) {
@@ -325,16 +325,16 @@ pub fn decode_f32<F: Format>(bits: u8) -> f32 {
         return if sign < 0.0 { -0.0 } else { 0.0 };
     }
     let exp = exponent_field::<F>(bits);
-    let mant = f32::from(mantissa_field::<F>(bits));
+    let mant = mantissa_field::<F>(bits) as f32;
     let scale = exp2i(if exp == 0 {
         1 - F::EXPONENT_BIAS
     } else {
-        i32::from(exp) - F::EXPONENT_BIAS
+        exp as i32 - F::EXPONENT_BIAS
     });
     let significand = if exp == 0 {
-        mant / exp2i(i32::from(F::MANTISSA_BITS))
+        mant / exp2i(F::MANTISSA_BITS as i32)
     } else {
-        1.0 + mant / exp2i(i32::from(F::MANTISSA_BITS))
+        1.0 + mant / exp2i(F::MANTISSA_BITS as i32)
     };
     sign * significand * scale
 }
@@ -558,7 +558,7 @@ pub const fn exp2i(exp: i32) -> f32 {
     }
 }
 
-pub fn total_key<F: Format>(bits: u8) -> i16 {
+pub const fn total_key<F: Format>(bits: u8) -> i16 {
     let widened = if F::STORAGE_BITS < 8 {
         (bits & F::STORAGE_MASK) << (8 - F::STORAGE_BITS)
     } else {
@@ -570,9 +570,9 @@ pub fn total_key<F: Format>(bits: u8) -> i16 {
     )]
     let signed = widened as i8;
     if signed < 0 {
-        i16::from(!widened)
+        (!widened) as i16
     } else {
-        i16::from(widened | 0x80)
+        (widened | 0x80) as i16
     }
 }
 

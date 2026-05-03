@@ -325,24 +325,24 @@ impl<F: Format> MicroFloat<F> {
         unary_result(self, libm::tanhf(self.to_f32()))
     }
 
-    pub fn min(self, other: Self) -> Self {
+    pub const fn min(self, other: Self) -> Self {
         if self.is_nan() && other.is_nan() {
             self
         } else if self.is_nan() {
             other
-        } else if other.is_nan() || self < other {
+        } else if other.is_nan() || const_is_lt(self, other) {
             self
         } else {
             other
         }
     }
 
-    pub fn max(self, other: Self) -> Self {
+    pub const fn max(self, other: Self) -> Self {
         if self.is_nan() && other.is_nan() {
             self
         } else if self.is_nan() {
             other
-        } else if other.is_nan() || self > other {
+        } else if other.is_nan() || const_is_gt(self, other) {
             self
         } else {
             other
@@ -354,15 +354,18 @@ impl<F: Format> MicroFloat<F> {
     /// # Panics
     ///
     /// Panics if `min > max`, `min` is NaN, or `max` is `NaN`.
-    pub fn clamp(self, min: Self, max: Self) -> Self {
+    pub const fn clamp(self, min: Self, max: Self) -> Self {
         assert!(
             !min.is_nan() && !max.is_nan(),
             "`min` and `max` must not be `NaN`"
         );
-        assert!(min <= max, "`min` must be less than or equal to `max`");
-        if self < min {
+        assert!(
+            !const_is_gt(min, max),
+            "`min` must be less than or equal to `max`"
+        );
+        if const_is_lt(self, min) {
             min
-        } else if self > max {
+        } else if const_is_gt(self, max) {
             max
         } else {
             self
@@ -373,8 +376,16 @@ impl<F: Format> MicroFloat<F> {
         clippy::trivially_copy_pass_by_ref,
         reason = "signature matches f32::total_cmp for API compatibility"
     )]
-    pub fn total_cmp(&self, other: &Self) -> Ordering {
-        total_key::<F>(self.bits).cmp(&total_key::<F>(other.bits))
+    pub const fn total_cmp(&self, other: &Self) -> Ordering {
+        let lhs = total_key::<F>(self.bits);
+        let rhs = total_key::<F>(other.bits);
+        if lhs < rhs {
+            Ordering::Less
+        } else if lhs > rhs {
+            Ordering::Greater
+        } else {
+            Ordering::Equal
+        }
     }
 }
 
@@ -383,6 +394,22 @@ fn unary_result<F: Format>(input: MicroFloat<F>, result: f32) -> MicroFloat<F> {
         input
     } else {
         MicroFloat::from_f32(result)
+    }
+}
+
+const fn const_is_lt<F: Format>(lhs: MicroFloat<F>, rhs: MicroFloat<F>) -> bool {
+    if matches!(lhs.classify(), FpCategory::Zero) && matches!(rhs.classify(), FpCategory::Zero) {
+        false
+    } else {
+        decode_f32::<F>(lhs.bits) < decode_f32::<F>(rhs.bits)
+    }
+}
+
+const fn const_is_gt<F: Format>(lhs: MicroFloat<F>, rhs: MicroFloat<F>) -> bool {
+    if matches!(lhs.classify(), FpCategory::Zero) && matches!(rhs.classify(), FpCategory::Zero) {
+        false
+    } else {
+        decode_f32::<F>(lhs.bits) > decode_f32::<F>(rhs.bits)
     }
 }
 

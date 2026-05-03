@@ -31,6 +31,10 @@ macro_rules! assert_const_methods_compile {
                 let _ = value.abs();
                 let _ = value.next_up();
                 let _ = value.next_down();
+                let _ = value.min(sign);
+                let _ = value.max(sign);
+                let _ = value.clamp(value, value);
+                let _ = value.total_cmp(&sign);
             };
         )*
     };

@@ -516,14 +516,14 @@ macro_rules! define_format {
             /// Returns the minimum of `self` and `other`, ignoring NaN when possible.
             ///
             /// If exactly one argument is NaN, the other argument is returned.
-            pub fn min(self, other: Self) -> Self {
+            pub const fn min(self, other: Self) -> Self {
                 Self(self.0.min(other.0))
             }
 
             /// Returns the maximum of `self` and `other`, ignoring NaN when possible.
             ///
             /// If exactly one argument is NaN, the other argument is returned.
-            pub fn max(self, other: Self) -> Self {
+            pub const fn max(self, other: Self) -> Self {
                 Self(self.0.max(other.0))
             }
 
@@ -532,14 +532,14 @@ macro_rules! define_format {
             /// # Panics
             ///
             /// Panics if `min` or `max` is `NaN`, or if `min > max`.
-            pub fn clamp(self, min: Self, max: Self) -> Self {
+            pub const fn clamp(self, min: Self, max: Self) -> Self {
                 Self(self.0.clamp(min.0, max.0))
             }
 
             /// Returns a total ordering over all bit patterns in this format.
             ///
             /// The ordering distinguishes signed zeros and orders NaN values consistently.
-            pub fn total_cmp(&self, other: &Self) -> core::cmp::Ordering {
+            pub const fn total_cmp(&self, other: &Self) -> core::cmp::Ordering {
                 self.0.total_cmp(&other.0)
             }
 

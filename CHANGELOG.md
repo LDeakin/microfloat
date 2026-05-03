@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Make the following methods `const` on all float types:
   - `abs()`
+  - `clamp()`
   - `classify()`
   - `classify_bits()`
   - `copysign()`
@@ -23,7 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `is_infinity_bits()`
   - `is_nan()`
   - `is_normal()`
+  - `max()`
+  - `min()`
   - `signum()`
+  - `total_cmp()`
 
 ## [0.1.2](https://github.com/LDeakin/microfloat/releases/tag/v0.1.2) - 2026-04-29
 
