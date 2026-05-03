@@ -13,7 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `classify_bits`, `is_infinity_bits` are now `const`
+- Make the following methods `const` on all float types:
+  - `abs()`
+  - `classify()`
+  - `classify_bits()`
+  - `copysign()`
+  - `is_finite()`
+  - `is_infinite()`
+  - `is_infinity_bits()`
+  - `is_nan()`
+  - `is_normal()`
+  - `signum()`
 
 ## [0.1.2](https://github.com/LDeakin/microfloat/releases/tag/v0.1.2) - 2026-04-29
 

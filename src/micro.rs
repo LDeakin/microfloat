@@ -78,23 +78,24 @@ impl<F: Format> MicroFloat<F> {
         f64::from(self.to_f32())
     }
 
-    pub fn is_nan(self) -> bool {
+    pub const fn is_nan(self) -> bool {
         classify_bits::<F>(self.bits).is_nan
     }
 
-    pub fn is_infinite(self) -> bool {
+    pub const fn is_infinite(self) -> bool {
         classify_bits::<F>(self.bits).is_infinite
     }
 
-    pub fn is_finite(self) -> bool {
+    pub const fn is_finite(self) -> bool {
         !self.is_nan() && !self.is_infinite()
     }
 
-    pub fn is_normal(self) -> bool {
-        matches!(self.classify(), FpCategory::Normal)
+    pub const fn is_normal(self) -> bool {
+        let class = classify_bits::<F>(self.bits);
+        !class.is_nan && !class.is_infinite && !class.is_zero && !class.is_subnormal
     }
 
-    pub fn classify(self) -> FpCategory {
+    pub const fn classify(self) -> FpCategory {
         let class = classify_bits::<F>(self.bits);
         if class.is_nan {
             FpCategory::Nan
@@ -126,11 +127,11 @@ impl<F: Format> MicroFloat<F> {
         }
     }
 
-    pub fn copysign(self, sign: Self) -> Self {
+    pub const fn copysign(self, sign: Self) -> Self {
         if matches!(F::NAN, NanEncoding::Single(_)) && self.is_nan() {
             return self;
         }
-        if F::SIGN == SignMode::Unsigned {
+        if matches!(F::SIGN, SignMode::Unsigned) {
             self
         } else if sign.is_sign_negative() {
             Self::from_bits(abs_bits::<F>(self.bits) | F::SIGN_BIT)
@@ -139,8 +140,8 @@ impl<F: Format> MicroFloat<F> {
         }
     }
 
-    pub fn signum(self) -> Self {
-        if self.is_nan() || self.classify() == FpCategory::Zero {
+    pub const fn signum(self) -> Self {
+        if self.is_nan() || matches!(self.classify(), FpCategory::Zero) {
             self
         } else if self.is_sign_negative() {
             Self::NEG_ONE
@@ -149,7 +150,7 @@ impl<F: Format> MicroFloat<F> {
         }
     }
 
-    pub fn abs(self) -> Self {
+    pub const fn abs(self) -> Self {
         if matches!(F::NAN, NanEncoding::Single(_)) && self.is_nan() {
             return self;
         }
