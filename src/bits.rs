@@ -12,7 +12,7 @@ pub struct Class {
     pub is_nan: bool,
 }
 
-pub fn classify_bits<F: Format>(bits: u8) -> Class {
+pub const fn classify_bits<F: Format>(bits: u8) -> Class {
     if is_nan_bits::<F>(bits) {
         return Class {
             is_zero: false,
@@ -29,13 +29,16 @@ pub fn classify_bits<F: Format>(bits: u8) -> Class {
             is_nan: false,
         };
     }
-    if F::ZERO == ZeroMode::None {
-        return Class {
-            is_zero: false,
-            is_subnormal: false,
-            is_infinite: false,
-            is_nan: false,
-        };
+    match F::ZERO {
+        ZeroMode::None => {
+            return Class {
+                is_zero: false,
+                is_subnormal: false,
+                is_infinite: false,
+                is_nan: false,
+            };
+        }
+        ZeroMode::Signed | ZeroMode::Unsigned => {}
     }
 
     let mag = magnitude_bits::<F>(bits);
@@ -174,7 +177,7 @@ pub const fn is_nan_bits<F: Format>(bits: u8) -> bool {
     }
 }
 
-pub fn is_infinity_bits<F: Format>(bits: u8) -> bool {
+pub const fn is_infinity_bits<F: Format>(bits: u8) -> bool {
     F::HAS_INF
         && exponent_field::<F>(bits) == F::MAX_EXPONENT_FIELD
         && mantissa_field::<F>(bits) == 0
@@ -205,6 +208,87 @@ pub const fn abs_bits<F: Format>(bits: u8) -> u8 {
     match F::SIGN {
         SignMode::Unsigned => bits,
         SignMode::Signed => magnitude_bits::<F>(bits),
+    }
+}
+
+pub const fn next_up_bits<F: Format>(bits: u8) -> u8 {
+    let bits = bits & F::STORAGE_MASK;
+    let class = classify_bits::<F>(bits);
+    if class.is_nan {
+        return bits;
+    }
+    if class.is_infinite {
+        return if is_negative_bits::<F>(bits) {
+            max_finite_bits::<F>(true)
+        } else {
+            bits
+        };
+    }
+    if class.is_zero {
+        return 1;
+    }
+    match F::SIGN {
+        SignMode::Unsigned => {
+            return if bits == max_finite_bits::<F>(false) {
+                infinity_bits::<F>(false)
+            } else {
+                bits + 1
+            };
+        }
+        SignMode::Signed => {}
+    }
+    if is_negative_bits::<F>(bits) {
+        if magnitude_bits::<F>(bits) == 1 {
+            neg_zero_bits::<F>()
+        } else {
+            bits - 1
+        }
+    } else if bits == max_finite_bits::<F>(false) {
+        infinity_bits::<F>(false)
+    } else {
+        bits + 1
+    }
+}
+
+pub const fn next_down_bits<F: Format>(bits: u8) -> u8 {
+    let bits = bits & F::STORAGE_MASK;
+    let class = classify_bits::<F>(bits);
+    if class.is_nan {
+        return bits;
+    }
+    if class.is_infinite {
+        return if is_negative_bits::<F>(bits) {
+            bits
+        } else {
+            max_finite_bits::<F>(false)
+        };
+    }
+    if class.is_zero {
+        return match F::SIGN {
+            SignMode::Signed => negate_bits::<F>(1),
+            SignMode::Unsigned => infinity_bits::<F>(true),
+        };
+    }
+    match F::SIGN {
+        SignMode::Unsigned => {
+            return if bits == 0 {
+                infinity_bits::<F>(true)
+            } else {
+                bits - 1
+            };
+        }
+        SignMode::Signed => {}
+    }
+    if is_negative_bits::<F>(bits) {
+        if bits == max_finite_bits::<F>(true) {
+            infinity_bits::<F>(true)
+        } else {
+            bits + 1
+        }
+    } else if magnitude_bits::<F>(bits) == 1 {
+        F::ZERO_BITS
+    } else {
+        bits - 1
     }
 }
 

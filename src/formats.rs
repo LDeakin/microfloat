@@ -370,6 +370,16 @@ macro_rules! define_format {
                 Self(self.0.abs())
             }
 
+            /// Returns the least representable value greater than `self`.
+            pub const fn next_up(self) -> Self {
+                Self(self.0.next_up())
+            }
+
+            /// Returns the greatest representable value less than `self`.
+            pub const fn next_down(self) -> Self {
+                Self(self.0.next_down())
+            }
+
             /// Returns the greatest integer less than or equal to `self`, rounded to this format.
             pub fn floor(self) -> Self {
                 Self(self.0.floor())
