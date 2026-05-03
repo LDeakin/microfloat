@@ -315,27 +315,27 @@ macro_rules! define_format {
             }
 
             /// Returns `true` if this value is NaN.
-            pub fn is_nan(self) -> bool {
+            pub const fn is_nan(self) -> bool {
                 self.0.is_nan()
             }
 
             /// Returns `true` if this value is positive or negative infinity.
-            pub fn is_infinite(self) -> bool {
+            pub const fn is_infinite(self) -> bool {
                 self.0.is_infinite()
             }
 
             /// Returns `true` if this value is neither infinite nor NaN.
-            pub fn is_finite(self) -> bool {
+            pub const fn is_finite(self) -> bool {
                 self.0.is_finite()
             }
 
             /// Returns `true` if this value is finite, nonzero, and not subnormal.
-            pub fn is_normal(self) -> bool {
+            pub const fn is_normal(self) -> bool {
                 self.0.is_normal()
             }
 
             /// Returns the floating point category of this value.
-            pub fn classify(self) -> core::num::FpCategory {
+            pub const fn classify(self) -> core::num::FpCategory {
                 self.0.classify()
             }
 
@@ -354,19 +354,19 @@ macro_rules! define_format {
             }
 
             /// Returns a value with the magnitude of `self` and the sign of `sign`.
-            pub fn copysign(self, sign: Self) -> Self {
+            pub const fn copysign(self, sign: Self) -> Self {
                 Self(self.0.copysign(sign.0))
             }
 
             /// Returns a number representing the sign of `self`.
             ///
             /// NaN and zero values are returned unchanged.
-            pub fn signum(self) -> Self {
+            pub const fn signum(self) -> Self {
                 Self(self.0.signum())
             }
 
             /// Returns the absolute value of `self`.
-            pub fn abs(self) -> Self {
+            pub const fn abs(self) -> Self {
                 Self(self.0.abs())
             }
 
